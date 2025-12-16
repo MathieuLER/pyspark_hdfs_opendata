@@ -1,0 +1,57 @@
+services:
+  jupyterlab:
+    build: .
+    ports:
+      - "8888:8888"
+      - "1235:1235"
+    volumes:
+      - .:/app
+    environment:
+      - AWS_ACCESS_KEY_ID=ROOTNAME
+      - AWS_SECRET_ACCESS_KEY=CHANGEME123
+     
+  namenode:
+    image: apache/hadoop:3
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    ports:
+      - "9000:9000"
+      - "9870:9870"
+    env_file:
+      - ./config
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+    volumes:
+      - ./hadoop_data/namenode:/hadoop/dfs/name
+    
+
+  datanode:
+    image: apache/hadoop:3
+    command: ["hdfs", "datanode"]
+    ports:
+      - "9864:9864"
+      - "9866:9866"
+    env_file:
+      - ./config
+    volumes:
+      - ./hadoop_data/datanode:/hadoop/dfs/data
+    
+
+  resourcemanager:
+    image: apache/hadoop:3
+    hostname: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - "8088:8088"
+    env_file:
+      - ./config
+    volumes:
+      - ./test.sh:/opt/test.sh
+    
+
+  nodemanager:
+    image: apache/hadoop:3
+    command: ["yarn", "nodemanager"]
+    env_file:
+      - ./config
+    

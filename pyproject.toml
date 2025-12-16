@@ -1,0 +1,9 @@
+[project]
+name = "jupyter"
+version = "0.1.0"
+description = "Pyspark training exercises"
+dependencies = [
+
+    "jupyterlab",
+    "py4j"
+]
